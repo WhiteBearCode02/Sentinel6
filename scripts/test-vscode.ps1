@@ -4,7 +4,10 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $profile = Join-Path $root '.tools\vscode-integration'
 $settings = Join-Path $profile 'User'
 New-Item -ItemType Directory -Force $settings | Out-Null
-'{"telemetry.telemetryLevel":"off","update.mode":"none","extensions.autoUpdate":false,"extensions.autoCheckUpdates":false,"workbench.startupEditor":"none"}' | Set-Content -LiteralPath (Join-Path $settings 'settings.json') -Encoding UTF8
+$config='{"telemetry.telemetryLevel":"off","update.mode":"none","extensions.autoUpdate":false,"extensions.autoCheckUpdates":false,"workbench.startupEditor":"none","sentinel6.threatMonitoring.enabled":false}'
+[IO.File]::WriteAllText((Join-Path $settings 'settings.json'),$config,[Text.UTF8Encoding]::new($false))
+$summary=Join-Path $root 'reports\vscode-summary.json'
+if(Test-Path -LiteralPath $summary){Remove-Item -LiteralPath $summary}
 if (-not (Test-Path -LiteralPath $CodeCli)) { throw 'Specify an installed VS Code CLI or prepare the official ZIP in .tools/vscode-portable.' }
 $runner = Join-Path $root 'test\vscode-runner.js'
 $extensions = Join-Path $root '.tools\vscode-extensions'

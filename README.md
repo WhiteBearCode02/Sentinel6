@@ -1,10 +1,12 @@
-# Sentinel6 Phase 2
+# Sentinel6 — Local Scanners + Threat Intelligence TI-1
+
+Threat Feed, 공식 데이터 수집, SQLite 캐시와 VS Code 실행 중 매일 갱신이 추가되었습니다. [TI-1 실행·구조·지원 범위](docs/threat-intelligence-ti1.md)를 참고하세요. 현재 프로젝트 영향 분석은 NOT_ANALYZED이며 TI-2 이후 범위입니다.
 
 무료 로컬 스캐너를 실행하는 VS Code 확장입니다. 이 저장소는 구현 시작 시 `.git`만 존재했으므로 Phase 1 검토 대상 코드가 없었으며, 확장 기본 구조도 함께 작성했습니다.
 
 ## 실행
 
-Node.js 20 이상, VS Code 1.90 이상을 사용합니다. 런타임 npm 의존성은 없습니다.
+Node.js 20 이상, VS Code 1.90 이상을 사용합니다. 먼저 `npm.cmd ci --ignore-scripts`로 고정된 무료 SQLite WASM 의존성을 설치합니다. 기존 보안 스캐너는 계속 오프라인으로 실행하며, Threat Intelligence는 별도로 공식 공개 메타데이터를 요청합니다.
 
 1. VS Code에서 이 저장소를 열고 F5 (`Run Sentinel6`)를 실행합니다.
 2. Extension Development Host에서 검사할 프로젝트를 엽니다.

@@ -4,7 +4,7 @@ const path = require('node:path');
 const {scan,status} = require('./core');
 const {checkedFile} = require('./parsers');
 let active;
-function activate(context) {
+async function activate(context) {
   const diagnostics = vscode.languages.createDiagnosticCollection('Sentinel6');
   const output = vscode.window.createOutputChannel('Sentinel6');
   let latest;
@@ -60,6 +60,15 @@ function activate(context) {
     finally {active=undefined;}
   });
   context.subscriptions.push(diagnostics,output,{dispose:()=>active?.abort()});
+  let threat;
+  try {threat=await require('./threat/view').activateThreats(context);}
+  catch {
+    output.appendLine('Threat Intelligence initialization failed. Scanner commands remain available.');
+    context.subscriptions.push(vscode.window.registerTreeDataProvider('sentinel6ThreatFeed',{
+      getTreeItem:item=>item,getChildren:()=>[new vscode.TreeItem('Threat Intelligence unavailable: check local storage, run npm ci --ignore-scripts, then reload.')]
+    }));
+  }
+  return {threat};
 }
 function deactivate(){active?.abort();}
 module.exports={activate,deactivate};

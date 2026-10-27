@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "cli": {
+    "observed_at": "2026-10-27T16:11:36.604Z",
+    "status": "completed",
+    "previous": {
+      "advisories": 1980,
+      "revisions": 2018,
+      "jobs": 2
+    },
+    "counts": {
+      "advisories": 2546,
+      "revisions": 2855,
+      "jobs": 3
+    },
+    "changed": 705,
+    "sources": [
+      {
+        "id": "cisa",
+        "status": "completed",
+        "last_success": "2026-10-27T16:02:38.800Z",
+        "error": null,
+        "pending": null
+      },
+      {
+        "id": "github",
+        "status": "completed",
+        "last_success": "2026-10-27T16:02:38.800Z",
+        "error": null,
+        "pending": null
+      },
+      {
+        "id": "osv:npm",
+        "status": "completed",
+        "last_success": "2026-10-27T16:02:38.800Z",
+        "error": null,
+        "pending": null
+      },
+      {
+        "id": "osv:PyPI",
+        "status": "completed",
+        "last_success": "2026-10-27T15:59:42.923Z",
+        "error": null,
+        "pending": null
+      }
+    ],
+    "project_analysis": "NOT_ANALYZED"
+  },
+  "vscode": {
+    "vscode": "1.143.1",
+    "treeRows": 200,
+    "realAdvisories": 2563,
+    "sqliteInExtensionHost": true,
+    "evidenceOpened": true,
+    "manualRefresh": "completed",
+    "sources": [
+      {
+        "id": "cisa",
+        "status": "completed",
+        "last_success": "2026-10-27T16:19:47.827Z",
+        "pending": null
+      },
+      {
+        "id": "github",
+        "status": "completed",
+        "last_success": "2026-10-27T16:19:47.827Z",
+        "pending": null
+      },
+      {
+        "id": "osv:npm",
+        "status": "completed",
+        "last_success": "2026-10-27T16:19:47.827Z",
+        "pending": null
+      },
+      {
+        "id": "osv:PyPI",
+        "status": "completed",
+        "last_success": "2026-10-27T16:19:47.827Z",
+        "pending": null
+      }
+    ],
+    "sourceUnchanged": true,
+    "projectImpact": "NOT_ANALYZED"
+  },
+  "scannerRegression": {
+    "commandsRegistered": 10,
+    "diagnostics": 34,
+    "sourceLine": 4,
+    "problemNavigation": true,
+    "localReportOpened": true,
+    "threatInitialized": true
+  }
+}
