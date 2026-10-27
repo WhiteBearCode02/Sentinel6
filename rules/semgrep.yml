@@ -1,0 +1,16 @@
+rules:
+  - id: sentinel6.python-eval
+    languages: [python]
+    severity: ERROR
+    message: Dynamic evaluation may execute untrusted code.
+    pattern: eval(...)
+  - id: sentinel6.javascript-eval
+    languages: [javascript, typescript]
+    severity: ERROR
+    message: Dynamic evaluation may execute untrusted code.
+    pattern: eval(...)
+  - id: sentinel6.python-shell
+    languages: [python]
+    severity: WARNING
+    message: Shell invocation requires careful input validation.
+    pattern: subprocess.$F(..., shell=True, ...)

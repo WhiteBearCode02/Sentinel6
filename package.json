@@ -1,0 +1,21 @@
+{
+  "name": "sentinel6", "displayName": "Sentinel6", "version": "0.2.0",
+  "description": "Local security scanners with explicit coverage reporting",
+  "publisher": "sentinel6-local", "license": "UNLICENSED", "engines": {"vscode": "^1.90.0", "node": ">=20"},
+  "main": "./src/extension.js", "activationEvents": ["onCommand:sentinel6.scan"],
+  "scripts": {"test": "node --test test/*.test.js", "scan": "node scripts/scan.js", "check": "node --check src/extension.js && node --check src/core.js && node --check src/parsers.js && node --check src/process.js"},
+  "contributes": {
+    "commands": [
+      {"command": "sentinel6.scan", "title": "Sentinel6: Scan Project"},
+      {"command": "sentinel6.cancel", "title": "Sentinel6: Cancel Scan"},
+      {"command": "sentinel6.status", "title": "Sentinel6: Scanner Status / Installation"},
+      {"command": "sentinel6.results", "title": "Sentinel6: Open Results"}
+    ],
+    "configuration": {"title": "Sentinel6", "properties": {
+      "sentinel6.timeoutSeconds": {"type": "number", "default": 120, "minimum": 5, "maximum": 600, "description": "Time limit for each scanner"},
+      "sentinel6.executables": {"type": "object", "default": {}, "description": "Trusted absolute executable paths keyed by semgrep, osv, gitleaks, trivy. No shell commands."}
+      ,"sentinel6.caches": {"type":"object","default":{},"description":"User-level absolute offline cache paths keyed by osv and trivy. No automatic downloads."}
+    }}
+  },
+  "capabilities": {"untrustedWorkspaces": {"supported": false}, "virtualWorkspaces": false}
+}

@@ -1,0 +1,6 @@
+.tools/
+.cache/
+node_modules/
+*.vsix
+reports/
+debug.log

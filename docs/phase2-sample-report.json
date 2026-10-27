@@ -1,0 +1,785 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-27T15:36:30.915Z",
+  "mode": "offline",
+  "scanners": [
+    {
+      "scanner": "semgrep",
+      "status": "completed",
+      "version": "1.182.1",
+      "areas": [
+        "sast"
+      ],
+      "install": "https://semgrep.dev/docs/getting-started/",
+      "durationMs": 3719,
+      "findings": 2
+    },
+    {
+      "scanner": "osv",
+      "status": "completed",
+      "version": "2.7.0",
+      "areas": [
+        "dependencies"
+      ],
+      "install": "https://google.github.io/osv-scanner/installation/",
+      "durationMs": 2756,
+      "findings": 45
+    },
+    {
+      "scanner": "gitleaks",
+      "status": "completed",
+      "version": "8.30.1",
+      "areas": [
+        "secrets"
+      ],
+      "install": "https://github.com/gitleaks/gitleaks#installing",
+      "durationMs": 725,
+      "findings": 1
+    },
+    {
+      "scanner": "trivy",
+      "status": "completed",
+      "version": "0.76.1",
+      "areas": [
+        "dependencies",
+        "secrets",
+        "misconfiguration"
+      ],
+      "install": "https://trivy.dev/docs/latest/getting-started/installation/",
+      "durationMs": 1067,
+      "findings": 32
+    }
+  ],
+  "findings": [
+    {
+      "file": "app.py",
+      "line": 4,
+      "endLine": 4,
+      "rule": "D..Sentinel6.reports.live.sentinel6-jPfoqG.sentinel6.python-eval",
+      "severity": "high",
+      "kind": "sast",
+      "aliases": [],
+      "scanners": [
+        "semgrep"
+      ],
+      "message": "Potential unsafe code pattern",
+      "id": "a95aace74a6fd39774fff0a7"
+    },
+    {
+      "file": "app.py",
+      "line": 6,
+      "endLine": 6,
+      "rule": "D..Sentinel6.reports.live.sentinel6-jPfoqG.sentinel6.python-shell",
+      "severity": "medium",
+      "kind": "sast",
+      "aliases": [],
+      "scanners": [
+        "semgrep"
+      ],
+      "message": "Potential unsafe code pattern",
+      "id": "d317b8e3316de5680bc30d42"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2019-19844",
+      "severity": "critical",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2019-19844",
+        "GHSA-vfq6-hq5r-27r6",
+        "PYSEC-2019-16"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "0df794324f5d597e033cccfc"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2020-7471",
+      "severity": "critical",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2020-7471",
+        "CVE-2020-7471",
+        "GHSA-hmr4-m2h5-33qx",
+        "PYSEC-2020-35"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "86f16bea5ba2d96a3de249d0"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2025-64459",
+      "severity": "critical",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2025-64459",
+        "CVE-2025-64459",
+        "GHSA-frmv-pr5f-9mcr",
+        "PYSEC-2025-108"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "4ea9f5543a7b1d0e8e6d59f3"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2018-6188",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2018-6188",
+        "GHSA-rf4j-j272-fj86",
+        "PYSEC-2018-4"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "acc13655ba615940d5adbb99"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2019-3498",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2019-3498",
+        "GHSA-337x-4q8g-prc5",
+        "PYSEC-2019-17"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "9a176dd9d3fcdf40b7bfc8ed"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2019-6975",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2019-6975",
+        "GHSA-wh4h-v3f2-r2pp",
+        "PYSEC-2019-18"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "bd933eb97b744ee701b880a9"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2022-36359",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2022-36359",
+        "CVE-2022-36359",
+        "GHSA-8x94-hmjh-97hq",
+        "PYSEC-2022-245"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "006db4b43770b005107f0649"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2025-57833",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2025-57833",
+        "CVE-2025-57833",
+        "GHSA-6w2r-r2m5-xq5w",
+        "PYSEC-2025-105"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "e7b8f42efac5fe124ca4118e"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2025-64458",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2025-64458",
+        "CVE-2025-64458",
+        "GHSA-qw25-v68c-qjf3",
+        "PYSEC-2025-107"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "7bf141f334c5c7584ad944e1"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-15307",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-15307",
+        "CVE-2026-15307",
+        "GHSA-wvqv-fj8w-qmhm",
+        "PYSEC-2026-4035"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "3c8c1a49d9c748db9400dc9c"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2018-14574",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2018-14574",
+        "GHSA-5hg3-6c2f-f3wr",
+        "PYSEC-2018-2"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "1ef03e98c876741cd3679f13"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2018-7536",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2018-7536",
+        "GHSA-r28v-mw67-m5p9",
+        "PYSEC-2018-5"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "829c3f566aa31f89a220cae8"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2019-11358",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2019-11358",
+        "DRUPAL-CORE-2019-006",
+        "GHSA-6c3j-c64m-qhgq",
+        "PYSEC-2026-628",
+        "SNYK-JS-JQUERY-174006"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "71cd59c5e20f9ac000f3d243"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2021-33203",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2021-33203",
+        "CVE-2021-33203",
+        "GHSA-68w8-qjq3-2gfm",
+        "PYSEC-2021-98"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "004228b470d6f4a66373bed0"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2024-45231",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2024-45231",
+        "CVE-2024-45231",
+        "GHSA-rrqc-c2jx-6jgv",
+        "PYSEC-2026-1297"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "f74da7aa4e4eea6757c2adde"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2025-48432",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2025-48432",
+        "CVE-2025-48432",
+        "GHSA-7xr5-9hcq-chf9",
+        "PYSEC-2025-47"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "3f2fcc64b7972faabca39949"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-15830",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-15830",
+        "CVE-2026-15830",
+        "GHSA-q238-5cxm-5c9h",
+        "PYSEC-2026-3717"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "137072dbda0464152adcbc30"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-53877",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-53877",
+        "CVE-2026-53877",
+        "GHSA-crhf-3pfg-w68w",
+        "PYSEC-2026-2091"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "f043a677501bfd393faafdbd"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-53878",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-53878",
+        "CVE-2026-53878",
+        "GHSA-8qcx-xf44-272x",
+        "PYSEC-2026-2092"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "bd37e2df7c30129f2ce3856e"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2018-7537",
+      "severity": "low",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "CVE-2018-7537",
+        "GHSA-2f9x-5v75-3qv4",
+        "PYSEC-2018-6"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "5c654be6b4b2d100b7b64f64"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-48587",
+      "severity": "low",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-48587",
+        "CVE-2026-48587",
+        "GHSA-923m-gv2p-w5qp",
+        "PYSEC-2026-198"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "3b2448513908f388e1878430"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-48588",
+      "severity": "low",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-48588",
+        "CVE-2026-48588",
+        "GHSA-3h9f-r86x-qvjx",
+        "PYSEC-2026-2090"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "8d6334611ba20b566d8c5c49"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-6873",
+      "severity": "low",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-6873",
+        "CVE-2026-6873",
+        "GHSA-h7pc-vwp9-298g",
+        "PYSEC-2026-199"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "096140ff602a4a00f36debf8"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-8404",
+      "severity": "low",
+      "kind": "dependency",
+      "package": "django",
+      "aliases": [
+        "BIT-django-2026-8404",
+        "CVE-2026-8404",
+        "GHSA-8cjm-8mp7-r2xf",
+        "PYSEC-2026-201"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "5aa5ae6d6d4b1b613c7a55ae"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2018-18074",
+      "severity": "high",
+      "kind": "dependency",
+      "package": "requests",
+      "aliases": [
+        "CVE-2018-18074",
+        "GHSA-x84v-xcm2-53pg",
+        "PYSEC-2018-28"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "67ec54c0fa353779e21d7420"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2023-32681",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "requests",
+      "aliases": [
+        "CVE-2023-32681",
+        "GHSA-j8r2-6x86-q33q",
+        "PYSEC-2023-74"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "51ca143b11b0840442f83c68"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2024-35195",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "requests",
+      "aliases": [
+        "CVE-2024-35195",
+        "GHSA-9wx4-h78v-vm56",
+        "PYSEC-2026-1873"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "6629ec7956f83e13599b89bf"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2024-47081",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "requests",
+      "aliases": [
+        "CVE-2024-47081",
+        "GHSA-9hjg-9r4m-mvj7",
+        "PYSEC-2026-1872"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "118d6125b897657db9bf741c"
+    },
+    {
+      "file": "requirements.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "CVE-2026-25645",
+      "severity": "medium",
+      "kind": "dependency",
+      "package": "requests",
+      "aliases": [
+        "CVE-2026-25645",
+        "GHSA-gc5v-m9x4-r6x2",
+        "PYSEC-2026-2275"
+      ],
+      "scanners": [
+        "osv",
+        "trivy"
+      ],
+      "message": "Known vulnerable dependency",
+      "id": "1336327ea6c708cad778a85a"
+    },
+    {
+      "file": "Dockerfile",
+      "line": 2,
+      "endLine": 2,
+      "rule": "DS-0002",
+      "severity": "high",
+      "kind": "misconfiguration",
+      "aliases": [],
+      "scanners": [
+        "trivy"
+      ],
+      "message": "Potential insecure configuration",
+      "id": "e7f4e2a643713b14bbe9aefb"
+    },
+    {
+      "file": "Dockerfile",
+      "line": 1,
+      "endLine": 1,
+      "rule": "DS-0026",
+      "severity": "low",
+      "kind": "misconfiguration",
+      "aliases": [],
+      "scanners": [
+        "trivy"
+      ],
+      "message": "Potential insecure configuration",
+      "id": "84a40e899d09c3d93c96bd57"
+    },
+    {
+      "file": "credentials.txt",
+      "line": 1,
+      "endLine": 1,
+      "rule": "github-pat",
+      "severity": "critical",
+      "kind": "secret",
+      "aliases": [
+        "github-pat"
+      ],
+      "scanners": [
+        "gitleaks",
+        "trivy"
+      ],
+      "message": "Potential exposed secret (value omitted)",
+      "id": "e4fc5e6587f92f2bee36a06d"
+    }
+  ],
+  "limitations": [
+    "Current files only; Git history is excluded.",
+    "Semgrep uses three bundled baseline rules, not a complete security ruleset.",
+    "Offline vulnerability databases must be provisioned separately; missing or stale databases limit coverage.",
+    "Dependency findings navigate to the manifest/lockfile at line 1.",
+    "Ignored, oversized files and symlinks are not scanned."
+  ],
+  "snapshot": {
+    "files": 5,
+    "bytes": 511,
+    "skipped": {
+      "symlinks": 0,
+      "largeFiles": 0,
+      "excludedDirectories": 0,
+      "scannerConfigs": 0
+    },
+    "exclusions": [
+      ".git",
+      ".tools",
+      ".cache",
+      "node_modules",
+      ".venv",
+      "venv",
+      "reports",
+      ".sentinel6",
+      "dist",
+      "build"
+    ],
+    "maxFileBytes": 5242880
+  },
+  "finishedAt": "2026-10-27T15:36:39.253Z",
+  "coverage": {
+    "sast": {
+      "completed": [
+        "semgrep"
+      ],
+      "uncompleted": []
+    },
+    "dependencies": {
+      "completed": [
+        "osv",
+        "trivy"
+      ],
+      "uncompleted": []
+    },
+    "secrets": {
+      "completed": [
+        "gitleaks",
+        "trivy"
+      ],
+      "uncompleted": []
+    },
+    "misconfiguration": {
+      "completed": [
+        "trivy"
+      ],
+      "uncompleted": []
+    }
+  }
+}
