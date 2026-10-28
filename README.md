@@ -1,14 +1,14 @@
-# Sentinel6 — Local Scanners + Threat Intelligence TI-1
+# Sentinel6 — Local Scanners + Project Impact TI-2
 
 공유 보안 서비스와 호환 모델 1.1을 점진적으로 추가했습니다. [공통 코어/API](docs/shared-security-core.md), [MCP 도입 설계](docs/mcp-server-design.md), [배포 준비 상태](docs/distribution-readiness.md), [다음 개발 계획](docs/next-development-plan.md)을 참고하세요. MCP 서버와 Marketplace 게시 기능은 아직 제공하지 않습니다.
 
-Threat Feed, 공식 데이터 수집, SQLite 캐시와 VS Code 실행 중 매일 갱신이 추가되었습니다. [TI-1 실행·구조·지원 범위](docs/threat-intelligence-ti1.md)를 참고하세요. 현재 프로젝트 영향 분석은 NOT_ANALYZED이며 TI-2 이후 범위입니다.
+기존 Threat Feed·공식 수집·SQLite·일일 갱신을 유지하며, **사용자가 활성화한 프로젝트의 npm/PyPI 의존성 버전 영향 분석(TI-2)**을 추가했습니다. [TI-2 사용법·판정·제한](docs/threat-intelligence-ti2-design.md), [실제 검증 결과](docs/threat-intelligence-ti2-validation.md), [TI-1 수집 범위](docs/threat-intelligence-ti1.md)를 참고하세요. 전체 공개 Feed의 NOT_ANALYZED와 프로젝트별 영향 판정은 별개입니다.
 
 무료 로컬 스캐너를 실행하는 VS Code 확장입니다. 이 저장소는 구현 시작 시 `.git`만 존재했으므로 Phase 1 검토 대상 코드가 없었으며, 확장 기본 구조도 함께 작성했습니다.
 
 ## 실행
 
-Node.js 20 이상, VS Code 1.90 이상을 사용합니다. 먼저 `npm.cmd ci --ignore-scripts`로 고정된 무료 SQLite WASM 의존성을 설치합니다. 기존 보안 스캐너는 계속 오프라인으로 실행하며, Threat Intelligence는 별도로 공식 공개 메타데이터를 요청합니다.
+Node.js **20.9.x 이상 20.x / 22.11.x 이상 22.x / 24.x**, VS Code 1.90 이상을 선언합니다. 실제 검증 환경은 Node 24.14.0 / VS Code 1.143.1 / Windows x64이며 최소 환경 검증은 배포 전 과제입니다. 먼저 `npm.cmd ci --ignore-scripts`로 고정된 무료 SQLite WASM·SemVer·PEP 440 의존성을 설치합니다. 이는 Sentinel6 개발 의존성 설치이며, 분석 대상 프로젝트에는 설치 명령을 실행하지 않습니다. 기존 보안 스캐너는 계속 오프라인으로 실행하며, Threat Intelligence는 별도로 공식 공개 메타데이터를 요청합니다.
 
 1. VS Code에서 이 저장소를 열고 F5 (`Run Sentinel6`)를 실행합니다.
 2. Extension Development Host에서 검사할 프로젝트를 엽니다.
@@ -27,6 +27,18 @@ npm.cmd run scan -- "D:\path\to\project"
 ```
 
 CLI 종료 코드: 0=모든 도구 완료, 2=미설치/실패/부분 완료/취소 존재, 1=전체 실행 오류. 취약점 발견 자체는 실패가 아닙니다.
+
+## 프로젝트 영향 분석 (TI-2)
+
+1. 신뢰된 프로젝트를 열고 `Sentinel6: Analyze Current Project`를 실행합니다. 기본값은 OFF이며 첫 안내에서 **Enable Project Analysis**를 선택합니다. 사용자 전역 설정이므로 이후 열린 신뢰된 로컬 workspace에도 적용됩니다. 설정 `sentinel6.projectAnalysis.enabled=false`로 중지할 수 있습니다.
+2. Activity Bar → Sentinel6 → **Project Impact**에서 관련 버전 / 추가 근거 필요 / 버전 영향 없음 / 미분석을 구분해 확인합니다. 기존 전체 Threat Feed도 유지됩니다.
+3. 취약점 항목을 선택하면 공식 출처·영향 범위·의존성 파일·판정 근거·수정 버전 후보·미확인 조건을 엽니다. 항목을 펼쳐 **Open Dependency File**을 선택하면 해당 파일과 줄로 이동합니다.
+4. `Sentinel6: Check Project Impact`, `Open Project Impact Markdown`, `View Impact History`로 로컬 결과를 확인합니다. JSON/Markdown 편집기에서 사용자가 Save As로 내보낼 수 있습니다. 자동 저장은 확장 전용 SQLite에만 수행합니다.
+5. `Sentinel6: Reassess Project`로 수동 재평가하거나 `Cancel Project Analysis`로 취소합니다. 활성화 상태에서는 의존성 파일 변경과 관련 공식 권고 revision/KEV 변경을 받아 재평가합니다. VS Code 종료 시 중지됩니다.
+
+지원: package.json, package-lock v2/v3, requirements.txt 및 안전한 `-r` 포함. 범위만 있거나 환경 마커·제약·VCS·별칭을 해결할 수 없으면 버전을 추측하지 않습니다. Yarn/pnpm/Poetry/uv/Maven/Gradle은 미지원으로 표시합니다. 수집 캐시에 없는 과거 취약점도 있으므로 **전체 검사는 기존 Scan Project와 함께 사용**하세요.
+
+CONFIRMED_AFFECTED는 선언/잠금 버전이 공식 영향 범위에 해당한다는 뜻입니다. 실제 설치·실행 조건·공격 경로·침해를 확인한 결과가 아닙니다. 스캐너는 영향 분석만으로 자동 실행되지 않습니다. 원본 수정·자동 패치·분석 대상의 패키지 설치·프로젝트 업로드·유료 AI 호출은 없습니다. 로컬 inventory·근거·알림 이력도 `Delete Local Threat Data`의 명시적 삭제에 포함됩니다.
 
 ## 설치 및 오프라인 DB
 

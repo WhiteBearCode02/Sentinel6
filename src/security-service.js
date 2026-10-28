@@ -49,6 +49,15 @@ async function createSecurityService({workspaces,scannerOptions={},maxResponseBy
       const statuses=await engines.status(options.executables,signal);
       return bounded(statuses.map(s=>({scanner:s.scanner,status:s.status,reason:s.reason,version:s.version,areas:s.areas,install:s.install})),maxResponseBytes);
     },
+    async inventoryWorkspace(params,{signal,previous}={}) {
+      input(params,['workspaceId'],['workspaceId']);
+      const root=await workspace(params.workspaceId);
+      return require('./inventory').collectInventory(root,{signal,previous});
+    },
+    async workspaceIdentity(params) {
+      input(params,['workspaceId'],['workspaceId']);
+      return {project_id:require('./inventory/identity').projectId(await workspace(params.workspaceId))};
+    },
     async scanWorkspace(params, {signal,onProgress}={}) {
       input(params,['workspaceId','timeoutMs'],['workspaceId']);
       const root=await workspace(params.workspaceId);

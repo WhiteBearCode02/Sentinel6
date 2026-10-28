@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+- TI-2: npm/PyPI 의존성 inventory, 고정 SemVer/PEP 440 비교, 공식 패키지 식별자 기반 영향 판정·근거·수정 버전 후보·우선순위 추가.
+- SQLite v1→v2 무손실 마이그레이션, 프로젝트 snapshot·이력·알림 중복 억제 및 관련 revision/의존성 변경 재평가 추가.
+- 기본 OFF인 프로젝트 분석 opt-in, 기존 Threat Feed 내 영향 분류, JSON/Markdown 근거·의존성 위치 이동·재평가/취소 명령 추가.
+- 기존 scanner schemaVersion 1/modelVersion 1.1과 CLI/Problems를 유지. TI-2 보고서는 별도 modelVersion ti-2.0. 설치/실행/공격 경로는 미검증.
+- 고정 PEP 440 라이브러리의 지원 범위에 맞춰 Node engine을 20.9+/20.x, 22.11+/22.x, 24.x로 명시. 프로젝트 라이선스는 UNLICENSED 유지.
+
 - 기존 scan()을 공유하는 SecurityService와 CLI/VS Code 연결, 허용 workspace ID·bounded 결과 조회 추가.
 - schemaVersion 1을 유지하는 modelVersion 1.1의 패키지/버전/권고 근거 메타데이터 추가. 알 수 없는 프로젝트 영향은 NOT_ANALYZED 유지.
 - Semgrep 임시 경로가 rule ID에 들어가 실행마다 ID가 바뀌던 문제 수정. 기존 경로 접두사 기반 Semgrep ID와는 달라질 수 있음.

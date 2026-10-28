@@ -20,7 +20,6 @@ const SCHEMA=`
  CREATE TABLE IF NOT EXISTS threat_revisions (id INTEGER PRIMARY KEY, canonical_id TEXT NOT NULL, fingerprint TEXT NOT NULL, observed_at TEXT NOT NULL, changes TEXT NOT NULL, data TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS http_cache (url TEXT PRIMARY KEY, etag TEXT, last_modified TEXT, parsed TEXT NOT NULL, observed_at TEXT NOT NULL);
  CREATE TABLE IF NOT EXISTS monitoring_jobs (id TEXT PRIMARY KEY, started_at TEXT NOT NULL, finished_at TEXT, status TEXT NOT NULL, summary TEXT);
- PRAGMA user_version=1;
 `;
 async function atomicReplace(temp,file,{rename=fs.rename,wait=sleep}={}) {
   for(let attempt=0;attempt<8;attempt++) {
@@ -34,7 +33,12 @@ async function atomicReplace(temp,file,{rename=fs.rename,wait=sleep}={}) {
   }
 }
 class ThreatStore {
-  constructor(SQL,file,db) {this.SQL=SQL;this.file=file;this.db=db;db.run(SCHEMA);}
+  constructor(SQL,file,db) {
+    this.SQL=SQL;this.file=file;this.db=db;
+    const version=db.exec('PRAGMA user_version')[0]?.values[0][0]||0;
+    if(version>2)throw new Error('unsupported_database_version');
+    db.run(SCHEMA);require('../impact/storage').migrate(this,version);
+  }
   all(sql,params=[]) {const s=this.db.prepare(sql);try{s.bind(params);const out=[];while(s.step())out.push(s.getAsObject());return out;}finally{s.free();}}
   get(sql,params=[]) {return this.all(sql,params)[0];}
   run(sql,params=[]) {this.db.run(sql,params);}
@@ -90,6 +94,7 @@ class ThreatStore {
     this.run('DELETE FROM http_cache WHERE observed_at<?',[cutoff]);
     this.run('DELETE FROM source_records WHERE last_seen<?',[cutoff]);
     this.run('DELETE FROM threat_advisories WHERE last_seen<?',[cutoff]);
+    require('../impact/storage').prune(this,cutoff);
   }
   counts() {return {advisories:this.get('SELECT count(*) AS n FROM threat_advisories').n,revisions:this.get('SELECT count(*) AS n FROM threat_revisions').n,jobs:this.get('SELECT count(*) AS n FROM monitoring_jobs').n};}
   async checkpoint() {

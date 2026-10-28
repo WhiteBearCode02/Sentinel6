@@ -19,7 +19,7 @@ class ThreatMonitor {
     return withReadStore(this.file,store=>({schemaVersion:1,generated_at:now,phase:'TI-1',analysis_status:'NOT_ANALYZED',monitor_error:this.lastError,monitor_diagnostic:this.diagnostic || null,
       sources:[...this.definitions.map(d=>{const s=store.state(d.id);return {...s,cursor:s.cursor?{pending_records:s.cursor.queue?.length,pending_page:!!s.cursor.next,window:s.cursor.window}:null,name:d.name,stale:!s.last_success||Date.parse(now)-Date.parse(s.last_success)>2*DAY};}),...deferredSources],
       advisories:store.feed(),counts:store.counts(),scope:'CISA full catalog; GitHub reviewed advisories and configured OSV ecosystems, initial 7 days; pending backlogs are explicit.',
-      limitations:['Project correlation and impact analysis are not implemented in TI-1.','No result here means the current feed has no matching stored record; it does not establish project safety.','Active monitoring stops when VS Code is closed.','OS scheduling, GitHub Actions, NVD, KISA, RSS and local AI are disabled.']}));
+      limitations:['Public feed metadata does not evaluate project impact; opt-in local project assessments are separate.','No result here means the current feed has no matching stored record; it does not establish project safety.','Active monitoring stops when VS Code is closed.','OS scheduling, GitHub Actions, NVD, KISA, RSS and local AI are disabled.']}));
   }
   async initialize() {await withStore(this.file,async store=>{
     store.run("UPDATE monitoring_jobs SET status='interrupted',finished_at=? WHERE status='running'",[this.now()]);

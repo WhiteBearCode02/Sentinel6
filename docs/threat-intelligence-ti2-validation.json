@@ -1,0 +1,239 @@
+{
+  "verifiedAt": "2026-10-28T05:40:23.890Z",
+  "baseline": {
+    "branch": "main",
+    "head": "129a754cd953237a3d93d98ed133a9a78275771c",
+    "remoteMainEqual": true,
+    "version": "0.3.0",
+    "tests": 91,
+    "clean": true
+  },
+  "environment": {
+    "platform": "Windows x64",
+    "node": "v24.14.0",
+    "vscode": "1.143.1"
+  },
+  "automated": {
+    "tests": 145,
+    "pass": 145,
+    "fail": 0,
+    "skipped": 0,
+    "newTests": 54,
+    "syntaxCheck": "passed",
+    "npmAuditKnownVulnerabilities": 0
+  },
+  "scanners": {
+    "sourceUnchanged": true,
+    "secretOmitted": true,
+    "scanners": [
+      {
+        "scanner": "semgrep",
+        "status": "completed",
+        "version": "1.182.1",
+        "findings": 2
+      },
+      {
+        "scanner": "osv",
+        "status": "completed",
+        "version": "2.7.0",
+        "findings": 45
+      },
+      {
+        "scanner": "gitleaks",
+        "status": "completed",
+        "version": "8.30.1",
+        "findings": 1
+      },
+      {
+        "scanner": "trivy",
+        "status": "completed",
+        "version": "0.76.1",
+        "findings": 32
+      }
+    ],
+    "merged": 34,
+    "byKind": {
+      "sast": 2,
+      "dependency": 29,
+      "secret": 1,
+      "misconfiguration": 2
+    }
+  },
+  "cli": {
+    "findings": 34,
+    "modelVersion": "1.1",
+    "schemaVersion": 1,
+    "sourceUnchanged": true,
+    "directEngineConsistent": true
+  },
+  "vscode": {
+    "commandsRegistered": 19,
+    "diagnostics": 34,
+    "sourceLine": 4,
+    "problemNavigation": true,
+    "localReportOpened": true,
+    "threatInitialized": true,
+    "modelVersion": "1.1",
+    "sharedCore": true,
+    "cliConsistent": true,
+    "projectAnalysisOff": true
+  },
+  "impactFixture": {
+    "fixture": true,
+    "advisories": "synthetic official-format test data; not real discoveries",
+    "vscode": "1.143.1",
+    "scenarios": {
+      "affected": true,
+      "fixed": true,
+      "unknown": true,
+      "kevWithoutSourceChange": true,
+      "evidenceAndNavigation": true,
+      "existingFeed": true
+    },
+    "matches": 4,
+    "history": 7,
+    "sourceUnchanged": true,
+    "notificationsDeduplicated": true,
+    "dependencyInstalled": false,
+    "networkCollection": false,
+    "dependencyWatcherTransitions": 2,
+    "testHarnessEditsRestored": true
+  },
+  "migration": {
+    "realCachedData": true,
+    "before": {
+      "version": 1,
+      "tables": {
+        "threat_advisories": {
+          "rows": 2546,
+          "sha256": "8ef48904f7cc314f5b619e155bf7c97a8cedfddde5ca273075d0ca275e61df14"
+        },
+        "source_records": {
+          "rows": 2855,
+          "sha256": "d0b66a47ee53b8525f50fe9f41b9b733a15cc2b164c44b3afa983e5918a2dd59"
+        },
+        "threat_revisions": {
+          "rows": 2855,
+          "sha256": "1c82e21f158e6dd07dd35fb1d750702c0813c78fc77cf06085e558f6ed7c63cc"
+        }
+      }
+    },
+    "after": {
+      "version": 2,
+      "tables": {
+        "threat_advisories": {
+          "rows": 2546,
+          "sha256": "8ef48904f7cc314f5b619e155bf7c97a8cedfddde5ca273075d0ca275e61df14"
+        },
+        "source_records": {
+          "rows": 2855,
+          "sha256": "d0b66a47ee53b8525f50fe9f41b9b733a15cc2b164c44b3afa983e5918a2dd59"
+        },
+        "threat_revisions": {
+          "rows": 2855,
+          "sha256": "1c82e21f158e6dd07dd35fb1d750702c0813c78fc77cf06085e558f6ed7c63cc"
+        }
+      }
+    },
+    "allPayloadsPreserved": true,
+    "originalCacheUnchanged": true,
+    "copyOnly": true
+  },
+  "realPublicFeed": {
+    "vscode": "1.143.1",
+    "treeRows": 200,
+    "realAdvisories": 2652,
+    "sqliteInExtensionHost": true,
+    "evidenceOpened": true,
+    "manualRefresh": "partial",
+    "sources": [
+      {
+        "id": "cisa",
+        "status": "completed",
+        "last_success": "2026-10-28T05:22:23.414Z",
+        "pending": null
+      },
+      {
+        "id": "github",
+        "status": "partial",
+        "last_success": "2026-10-27T16:02:38.800Z",
+        "pending": {
+          "pending_page": true,
+          "window": {
+            "start": "2026-10-27T15:57:38.800Z",
+            "end": "2026-10-28T05:22:23.414Z"
+          }
+        }
+      },
+      {
+        "id": "osv:npm",
+        "status": "partial",
+        "last_success": "2026-10-27T16:02:38.800Z",
+        "pending": {
+          "pending_records": 18,
+          "pending_page": false,
+          "window": {
+            "start": "2026-10-27T15:57:38.800Z",
+            "end": "2026-10-28T05:22:23.414Z"
+          }
+        }
+      },
+      {
+        "id": "osv:PyPI",
+        "status": "partial",
+        "last_success": "2026-10-27T15:59:42.923Z",
+        "pending": {
+          "pending_records": 59,
+          "pending_page": false,
+          "window": {
+            "start": "2026-10-27T15:54:42.923Z",
+            "end": "2026-10-28T05:22:23.414Z"
+          }
+        }
+      }
+    ],
+    "sourceUnchanged": true,
+    "projectImpact": "NOT_ANALYZED"
+  },
+  "realCachedImpact": {
+    "syntheticAdvisories": false,
+    "source": "Previously collected official cache, offline; freshness remains explicit",
+    "sourceCount": 2546,
+    "dependencies": 2,
+    "matches": 0,
+    "statuses": {
+      "CONFIRMED_AFFECTED": 0,
+      "POTENTIALLY_AFFECTED": 0,
+      "NOT_AFFECTED": 0,
+      "INSUFFICIENT_EVIDENCE": 0,
+      "MITIGATED": 0,
+      "NOT_ANALYZED": 0
+    },
+    "sourceUnchanged": true,
+    "networkRequests": 0,
+    "examples": [],
+    "storage": {
+      "bytes": 23105536,
+      "limit_bytes": 67108864,
+      "warning": false
+    }
+  },
+  "scope": {
+    "paidAI": false,
+    "projectUpload": false,
+    "autoPatch": false,
+    "targetDependencyInstall": false,
+    "mcpImplemented": false,
+    "publish": false,
+    "remotePush": false,
+    "schedulerRegistered": false,
+    "installationVerified": false,
+    "attackPathVerified": false
+  },
+  "limitations": [
+    "TI-2 synthetic CVE/KEV fixtures are not real discoveries.",
+    "Real TI-1 refresh is partial with explicit continuations.",
+    "Existing recent public cache has no matching records for the old Django/requests fixture; zero matches is not a safe verdict.",
+    "Windows Node 24.14.0 / VS Code 1.143.1 tested; other platforms and declared minimum runtimes not verified."
+  ]
+}

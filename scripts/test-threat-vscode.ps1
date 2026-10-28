@@ -5,7 +5,7 @@ $profile=Join-Path $root '.tools\vscode-threat-integration'
 $user=Join-Path $profile 'User'
 $global=Join-Path $user 'globalStorage\sentinel6-local.sentinel6'
 New-Item -ItemType Directory -Force $global | Out-Null
-$config='{"telemetry.telemetryLevel":"off","update.mode":"none","extensions.autoUpdate":false,"extensions.autoCheckUpdates":false,"workbench.startupEditor":"none","sentinel6.threatMonitoring.enabled":false}'
+$config='{"telemetry.telemetryLevel":"off","update.mode":"none","extensions.autoUpdate":false,"extensions.autoCheckUpdates":false,"workbench.startupEditor":"none","sentinel6.threatMonitoring.enabled":false,"sentinel6.projectAnalysis.enabled":false}'
 [IO.File]::WriteAllText((Join-Path $user 'settings.json'),$config,[Text.UTF8Encoding]::new($false))
 $summary=Join-Path $root 'reports\threat-vscode-summary.json'
 if(Test-Path -LiteralPath $summary){Remove-Item -LiteralPath $summary}

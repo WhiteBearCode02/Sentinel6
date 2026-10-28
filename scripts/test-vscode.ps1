@@ -4,7 +4,7 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $profile = Join-Path $root '.tools\vscode-integration'
 $settings = Join-Path $profile 'User'
 New-Item -ItemType Directory -Force $settings | Out-Null
-$config='{"telemetry.telemetryLevel":"off","update.mode":"none","extensions.autoUpdate":false,"extensions.autoCheckUpdates":false,"workbench.startupEditor":"none","sentinel6.threatMonitoring.enabled":false}'
+$config='{"telemetry.telemetryLevel":"off","update.mode":"none","extensions.autoUpdate":false,"extensions.autoCheckUpdates":false,"workbench.startupEditor":"none","sentinel6.threatMonitoring.enabled":false,"sentinel6.projectAnalysis.enabled":false}'
 [IO.File]::WriteAllText((Join-Path $settings 'settings.json'),$config,[Text.UTF8Encoding]::new($false))
 $summary=Join-Path $root 'reports\vscode-summary.json'
 if(Test-Path -LiteralPath $summary){Remove-Item -LiteralPath $summary}

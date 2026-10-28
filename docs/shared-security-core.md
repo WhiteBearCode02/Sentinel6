@@ -9,7 +9,7 @@
 | 스캐너 | Semgrep CE/OSV/Gitleaks/Trivy, 로컬 복사본, JSON 파서, 중복 병합, timeout/cancel, 미설치/실패 구분 |
 | VS Code | 명령·진행률·Problems·소스 위치 이동·로컬 보고서 |
 | TI-1 | CISA/GitHub/OSV 공개 메타데이터 수집, SQLite, 변경 이력, 열린 VS Code의 일일 갱신 |
-| 프로젝트 영향 | inventory/생태계별 버전 비교/공격 전제/정적 도달 경로 미구현. NOT_ANALYZED 유지 |
+| 프로젝트 영향 | TI-2에서 opt-in npm/PyPI inventory·생태계 비교·공식 권고 연관성·근거/이력 추가. 실행 조건/도달 경로는 미검증. [현재 계약](threat-intelligence-ti2-design.md) |
 | MCP | 이번 단계는 계약·설계와 공유 서비스 경계 검증. SDK/서버/실제 연결은 미구현 |
 | 배포 | Marketplace/VSIX/CI 실행/예약 작업/원격 게시 미수행. 별도 readiness 문서 참고 |
 
@@ -25,7 +25,9 @@ flowchart LR
     E --> P[Process limits + scanner adapters]
     P --> R[Allowlisted parsers + merge]
     R --> J[Compatible JSON report 1 / model 1.1]
-    T[Existing TI-1 store + monitor] -. Future correlation .-> S
+    T[Existing TI-1 store + monitor] --> I[ProjectImpactService]
+    I --> S
+    S --> N[Read-only dependency inventory]
 ```
 
 구현 API는 `src/security-service.js`의 `createSecurityService(config)`입니다. `src/report-model.js`가 additive 모델 표식을 적용하고, 기존 `src/parsers.js`가 안전한 스캐너 메타데이터를 제공합니다. 확장과 CLI가 이 서비스를 통해 같은 `scan()`을 호출합니다.

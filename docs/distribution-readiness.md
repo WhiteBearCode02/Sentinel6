@@ -6,7 +6,7 @@
 
 | 인터페이스 | 현재 상태 | 배포 방향 |
 |---|---|---|
-| VS Code Extension | 스캐너 4종·Problems·TI-1 Feed 구현 | Primary product. 로컬 VSIX 검증 후 Marketplace를 우선 |
+| VS Code Extension | 스캐너 4종·Problems·TI-1 Feed·opt-in TI-2 영향/근거/이력 구현 | Primary product. 로컬 VSIX 검증 후 Marketplace를 우선 |
 | Local CLI | 기존 scan/Threat 수집 진입점 존재 | 공통 Security Core를 호출하는 로컬 인터페이스 |
 | Local MCP stdio | 현재 단계에서 도입 설계 | 동일 코어를 호출. 원격 HTTP·별도 분석 엔진·백그라운드 scheduler를 만들지 않음 |
 | Desktop application | 미구현 | 향후 같은 코어 재사용. 이번 배포 범위 제외 |

@@ -59,6 +59,7 @@ async function activate(context) {
           output.appendLine(`Findings: ${report.findings.length}\nReport: ${reportFile}`);output.show(true);
           const incomplete=report.scanners.some(s=>s.status !== 'completed');
           vscode.window.showInformationMessage(`Sentinel6: ${report.findings.length} findings. ${incomplete ? 'Some checks were not completed; see Sentinel6 output.' : 'Checks completed within documented coverage.'}`);
+          try{await threat?.impact.recordScannerReport(folder.uri.fsPath,report);}catch{output.appendLine('Project impact could not refresh; scanner results remain available.');}
           return result;
         } finally {sub.dispose();}
       });
