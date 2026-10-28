@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+- TI-3: Red Hat 공식 보안 API/Cisco Talos 연구 RSS의 별도 opt-in 수집 adapter와 기존 daily monitor 연결.
+- 출처별 주장·공식 alias·독립 출처/미러 구분·충돌·PoC/악용 확인 수준, 명시적 조건/CWE/검증된 CVSS 분석 추가.
+- 기존 TI-2 결과에 별도 ti-3.0 조건 envelope와 제한된 읽기 전용 .npmrc 근거 연결. 설치·기능 사용·외부 노출·공격 성공은 미확인 유지.
+- SQLite user_version 3의 뉴스·분석·revision 저장, 기존 데이터 보존, 정규화 cache version/중복 억제·보존/삭제 추가.
+- VS Code 상세/조건/출처 검증/Markdown/뉴스 갱신 명령 5개 추가. XML 파서 sax 1.6.1 (BlueOak-1.0.0) 고정, 본문 크롤링/AI/자동 수정 없음.
+
 - TI-2: npm/PyPI 의존성 inventory, 고정 SemVer/PEP 440 비교, 공식 패키지 식별자 기반 영향 판정·근거·수정 버전 후보·우선순위 추가.
 - SQLite v1→v2 무손실 마이그레이션, 프로젝트 snapshot·이력·알림 중복 억제 및 관련 revision/의존성 변경 재평가 추가.
 - 기본 OFF인 프로젝트 분석 opt-in, 기존 Threat Feed 내 영향 분류, JSON/Markdown 근거·의존성 위치 이동·재평가/취소 명령 추가.

@@ -58,6 +58,10 @@ async function createSecurityService({workspaces,scannerOptions={},maxResponseBy
       input(params,['workspaceId'],['workspaceId']);
       return {project_id:require('./inventory/identity').projectId(await workspace(params.workspaceId))};
     },
+    async configurationFacts(params,{signal}={}) {
+      input(params,['workspaceId'],['workspaceId']);
+      return require('./intelligence/configuration').configurationFacts(await workspace(params.workspaceId),{signal});
+    },
     async scanWorkspace(params, {signal,onProgress}={}) {
       input(params,['workspaceId','timeoutMs'],['workspaceId']);
       const root=await workspace(params.workspaceId);

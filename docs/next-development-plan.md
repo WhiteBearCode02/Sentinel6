@@ -1,6 +1,6 @@
 # Next development gates
 
-현재 완료 지점은 기존 공유 서비스 위 **TI-2 npm/PyPI 의존성 영향 분석·근거/이력·opt-in VS Code 통합**입니다. [구현 범위](threat-intelligence-ti2-design.md)와 [검증](threat-intelligence-ti2-validation.md)을 참고하세요. 다음 작업을 자동으로 시작하지 않습니다.
+현재 완료 지점은 기존 공유 서비스 위 **TI-3 공식 API/연구 RSS·출처 검증·명시적 공격 조건·TI-2 연동·VS Code JSON/Markdown**입니다. [TI-3 범위](threat-intelligence-ti3-design.md)와 [검증](threat-intelligence-ti3-validation.md)을 참고하세요. 아래 후속 작업을 자동으로 시작하지 않습니다.
 
 ## 1. Local MCP stdio adapter
 
@@ -23,7 +23,7 @@
 5. 공식 공급업체 권고와 허용 RSS/API 교차 검증은 그 다음(TI-3). 뉴스 주장만으로 악용/취약성 확정하지 않음.
 6. 이후 정적 도달 경로(TI-4), 승인 기반 Diff/테스트/재검사(TI-5). 현재 전역 호출 그래프나 자동 수정은 없음.
 
-위 1~4의 npm/PyPI inventory·범위 비교·scanner 보조 근거·SQLite 프로젝트 모델 및 코드 변경 없는 관련 revision/KEV 재평가·로컬 알림 중복 억제는 TI-2에서 구현했습니다. Maven/그 외 생태계, 설치/실행 조건, 공격 전제 확인과 도달 경로는 아직 미구현입니다. 다음 우선순위는 5의 TI-3 공식 공급업체 원문·뉴스 출처와 공격 조건 교차 검증이며, 이어 6의 TI-4/TI-5를 별도 진행합니다.
+위 1~4는 TI-2에서 구현했습니다. 5는 TI-3에서 검토된 Red Hat API/Talos RSS, 주장별 출처 검증, 명시적 조건과 제한된 로컬 선언 확인까지 구현했습니다. 실제 런타임/설치/제품 범위/도달 경로를 확인한 것은 아닙니다. 다음에는 검토된 공급업체 adapter와 조건 규칙의 범위를 확장하거나 별도 승인된 MCP 연결을 설계하고, TI-4의 정적 코드 경로·실행 조건, TI-5의 승인된 수정/재검증을 단계별로 진행합니다. NVD/KISA는 아직 disabled이며 제공 조건/범위 검토와 실제 adapter 검증이 선행돼야 합니다.
 
 ## 3. Marketplace: Primary product
 

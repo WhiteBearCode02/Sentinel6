@@ -2,14 +2,15 @@
 const {CollectionError,CISA,CISA_MIRROR,ECOSYSTEMS,validateUrl}=require('./http');
 const model=require('./model');
 function json(text) {try{return JSON.parse(text);}catch{throw new CollectionError('invalid_schema');}}
-async function read(url,decode,store,{client,signal,now,indexSince}) {
+async function read(url,decode,store,{client,signal,now,indexSince,cacheVersion}) {
   let cached=store.cache(url);
+  if(cacheVersion&&cached?.parsed?.normalization_version!==cacheVersion)cached=null;
   if(indexSince&&cached&&(!Array.isArray(cached.parsed?.entries)||typeof cached.parsed?.since!=='string'||cached.parsed.since>indexSince))cached=null;
   const response=await client.get(url,{cache:cached,signal,indexSince});
-  if(response.status===304) {if(!cached)throw new CollectionError('cache_miss');return cached.parsed;}
-  const parsed=decode(response.text,response.headers || {});
+  if(response.status===304) {if(!cached)throw new CollectionError('cache_miss');return cacheVersion?cached.parsed.value:cached.parsed;}
+  const decoded=decode(response.text,response.headers || {}),parsed=cacheVersion?{normalization_version:cacheVersion,value:decoded}:decoded;
   store.putCache(url,response,parsed,now);
-  return parsed;
+  return decoded;
 }
 function ingest(store,records,now) {
   return records.map(r=>store.ingest(r,now)).filter(r=>r.changed);

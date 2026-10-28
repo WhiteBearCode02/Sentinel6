@@ -12,12 +12,12 @@ const SCHEMA=`
  CREATE TABLE IF NOT EXISTS notification_history(event_key TEXT PRIMARY KEY,project_id TEXT NOT NULL,created_at TEXT NOT NULL,delivered_at TEXT,data TEXT NOT NULL);
  PRAGMA user_version=2;
 `;
-function migrate(store,previousVersion){if(previousVersion>2)throw new Error('unsupported_database_version');store.db.run(SCHEMA);}
+function migrate(store,previousVersion){if(previousVersion>3)throw new Error('unsupported_database_version');store.db.run(SCHEMA.replace('PRAGMA user_version=2;',previousVersion<2?'PRAGMA user_version=2;':''));}
 function inventory(store,id){const r=store.get('SELECT data FROM project_inventory WHERE project_id=?',[id]);return r?JSON.parse(r.data):null;}
 function latest(store,id){const r=store.get('SELECT * FROM project_scans WHERE project_id=? ORDER BY analyzed_at DESC,rowid DESC LIMIT 1',[id]);return r?{...r,report:JSON.parse(r.report)}:null;}
 function matches(store,id){return store.all('SELECT data FROM project_threat_matches WHERE project_id=?',[id]).map(r=>JSON.parse(r.data));}
 function sourceStates(store){return store.all('SELECT id,state FROM threat_sources').map(r=>{const s=JSON.parse(r.state);return {id:r.id,status:s.status,last_success:s.last_success,error:s.error,stale:!s.last_success||!Number.isFinite(Date.parse(s.last_success))||Date.now()-Date.parse(s.last_success)>172800000};});}
-function sourceSnapshot(store){return {advisories:store.all('SELECT data FROM threat_advisories').map(r=>JSON.parse(r.data)),records:store.all('SELECT canonical_id,data FROM source_records').map(r=>({...JSON.parse(r.data),canonical_id:r.canonical_id})),states:sourceStates(store)};}
+function sourceSnapshot(store){return {advisories:store.all('SELECT data FROM threat_advisories').map(r=>JSON.parse(r.data)),records:store.all('SELECT canonical_id,data FROM source_records').map(r=>({...JSON.parse(r.data),canonical_id:r.canonical_id})),states:sourceStates(store),intelligence:require('../intelligence/storage').all(store)};}
 function usage(store){const page=store.get('PRAGMA page_count').page_count,size=store.get('PRAGMA page_size').page_size;return {bytes:page*size,limit_bytes:64*1024*1024,warning:page*size>51*1024*1024};}
 function save(store,inv,report,inputFingerprint,scanId){
   const id=inv.project_id,now=report.analyzed_at,old=new Map(matches(store,id).map(m=>[m.id,m]));const notifications=[];

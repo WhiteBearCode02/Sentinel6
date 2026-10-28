@@ -51,7 +51,12 @@
       {"command":"sentinel6.projectRelated","title":"Sentinel6: View Related Vulnerabilities"},
       {"command":"sentinel6.projectHistory","title":"Sentinel6: View Impact History"},
       {"command":"sentinel6.projectEvidence","title":"Sentinel6: View Project Evidence"},
-      {"command":"sentinel6.projectOpenDependency","title":"Sentinel6: Open Dependency File"}
+      {"command":"sentinel6.projectOpenDependency","title":"Sentinel6: Open Dependency File"},
+      {"command":"sentinel6.intelligenceAnalyze","title":"Sentinel6: Analyze Threat Details"},
+      {"command":"sentinel6.attackConditions","title":"Sentinel6: View Attack Conditions"},
+      {"command":"sentinel6.verifySources","title":"Sentinel6: Verify Threat Sources"},
+      {"command":"sentinel6.intelligenceReport","title":"Sentinel6: Open Intelligence Report"},
+      {"command":"sentinel6.newsRefresh","title":"Sentinel6: Refresh Security News"}
     ],
     "configuration": {
       "title": "Sentinel6",
@@ -76,7 +81,8 @@
         "sentinel6.threatMonitoring.enabled":{"type":"boolean","default":true,"scope":"application","description":"Collect public threat metadata once per 24 hours while VS Code is open. No source code or package list upload. Stops when VS Code closes."},
         "sentinel6.threatMonitoring.ecosystems":{"type":"array","items":{"type":"string","enum":["npm","PyPI","Go","Maven"]},"default":["npm","PyPI"],"minItems":1,"maxItems":4,"uniqueItems":true,"scope":"application","description":"Public OSV feeds to monitor; independent of your project. Reload window after changing."},
         "sentinel6.threatMonitoring.retentionDays":{"type":"integer","default":90,"minimum":7,"maximum":365,"scope":"application","description":"Retain unobserved advisories and history for this many days. Reload window after changing."},
-        "sentinel6.projectAnalysis.enabled":{"type":"boolean","default":false,"scope":"application","description":"Opt in to local npm/PyPI dependency inventory and cached advisory matching in trusted open workspaces. No installs, source edits or project uploads. Stores dependency evidence locally; runtime conditions remain unverified."}
+        "sentinel6.projectAnalysis.enabled":{"type":"boolean","default":false,"scope":"application","description":"Opt in to local npm/PyPI dependency inventory and cached advisory matching in trusted open workspaces. No installs, source edits or project uploads. Stores dependency evidence locally; runtime conditions remain unverified."},
+        "sentinel6.securityNews.enabled":{"type":"boolean","default":false,"scope":"application","description":"Opt in to reviewed Red Hat public API and Cisco Talos research RSS metadata. No project upload, article crawling or AI. Uses the existing daily monitor while VS Code is open."}
       }
     },
     "viewsContainers":{"activitybar":[{"id":"sentinel6","title":"Sentinel6","icon":"resources/sentinel6.svg"}]},
@@ -91,6 +97,7 @@
   },
   "dependencies": {
     "@renovatebot/pep440": "4.2.4",
+    "sax": "1.6.1",
     "semver": "7.8.5",
     "sql.js": "1.15.2"
   }

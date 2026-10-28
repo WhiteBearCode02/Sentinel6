@@ -36,8 +36,9 @@ class ThreatStore {
   constructor(SQL,file,db) {
     this.SQL=SQL;this.file=file;this.db=db;
     const version=db.exec('PRAGMA user_version')[0]?.values[0][0]||0;
-    if(version>2)throw new Error('unsupported_database_version');
+    if(version>3)throw new Error('unsupported_database_version');
     db.run(SCHEMA);require('../impact/storage').migrate(this,version);
+    require('../intelligence/storage').migrate(this,version);
   }
   all(sql,params=[]) {const s=this.db.prepare(sql);try{s.bind(params);const out=[];while(s.step())out.push(s.getAsObject());return out;}finally{s.free();}}
   get(sql,params=[]) {return this.all(sql,params)[0];}
@@ -95,6 +96,7 @@ class ThreatStore {
     this.run('DELETE FROM source_records WHERE last_seen<?',[cutoff]);
     this.run('DELETE FROM threat_advisories WHERE last_seen<?',[cutoff]);
     require('../impact/storage').prune(this,cutoff);
+    require('../intelligence/storage').prune(this,cutoff);
   }
   counts() {return {advisories:this.get('SELECT count(*) AS n FROM threat_advisories').n,revisions:this.get('SELECT count(*) AS n FROM threat_revisions').n,jobs:this.get('SELECT count(*) AS n FROM monitoring_jobs').n};}
   async checkpoint() {

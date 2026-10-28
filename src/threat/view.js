@@ -11,6 +11,7 @@ class ThreatFeed {
   getTreeItem(item){return item;}
   async getChildren(item) {
     if(item?.impactNode)return this.projectView?.children(item)||[];
+    if(item?.advisoryId)return [['Analyze Threat Details','sentinel6.intelligenceAnalyze'],['View Attack Conditions','sentinel6.attackConditions'],['Verify Threat Sources','sentinel6.verifySources'],['Open Intelligence Report','sentinel6.intelligenceReport']].map(([title,command])=>{const row=new vscode.TreeItem(title);row.command={command,title,arguments:[item.advisoryId]};return row;});
     let data;try{data=await this.monitor.snapshot();}catch{return [new vscode.TreeItem('Threat cache unavailable; retry refresh.')];}
     if(item?.group==='sources')return data.sources.map(s=>{
       const row=new vscode.TreeItem(`${s.name}: ${s.status}${s.stale?' · STALE / incomplete':''}`);
@@ -18,17 +19,22 @@ class ThreatFeed {
       row.command={command:'sentinel6.threatSource',title:'Source status',arguments:[s]};return row;
     });
     if(item?.group==='advisories')return data.advisories.map(a=>{
-      const row=new vscode.TreeItem(`${a.canonical_id}: ${a.title}`);row.id=a.canonical_id;
+      const row=new vscode.TreeItem(`${a.canonical_id}: ${a.title}`,vscode.TreeItemCollapsibleState.Collapsed);row.id=a.canonical_id;row.advisoryId=a.canonical_id;
       row.description=[a.kev_status===true?'KEV':'',a.withdrawn_at?'WITHDRAWN':'',...(a.change_type||[])].filter(Boolean).join(' · ');
       row.tooltip=`Public feed: ${a.analysis_status}. See Project Impact for workspace-specific assessments.\nFirst observed: ${a.first_seen_at}\nLast changed: ${a.last_changed_at}\nSources: ${a.evidence_sources.map(s=>s.source).join(', ')}`;
       row.command={command:'sentinel6.threatOpen',title:'View public evidence',arguments:[a.canonical_id]};return row;
     });
+    if(item?.group==='securityNews'){
+      const action=new vscode.TreeItem('Refresh Security News / Enable Reviewed Sources');action.command={command:'sentinel6.newsRefresh',title:'Refresh Security News'};
+      return [action,...data.security_news.map(n=>{const row=new vscode.TreeItem(`${n.source}: ${n.title}`,vscode.TreeItemCollapsibleState.Collapsed);row.description=n.verification_status;row.advisoryId=n.related_cve_ids[0]||n.related_ghsa_ids[0]||'NEWS-'+n.source_id.slice(0,24);row.command={command:'sentinel6.intelligenceAnalyze',title:'Analyze cached metadata',arguments:[row.advisoryId]};return row;})];
+    }
     const mode=new vscode.TreeItem(`Active monitoring: ${this.enabled()?'ON · daily':'OFF'} · stops when VS Code closes`);
     const scope=new vscode.TreeItem('Public threat metadata; project impact requires local analysis');
     const source=new vscode.TreeItem('Sources / freshness',vscode.TreeItemCollapsibleState.Expanded);source.group='sources';
     const feed=new vscode.TreeItem(`Threat Feed: ${data.counts.advisories} cached (latest 200)`,vscode.TreeItemCollapsibleState.Expanded);feed.group='advisories';
     const project=new vscode.TreeItem('Project Impact'+(this.projectView?.enabled()?'':' (OFF)'),vscode.TreeItemCollapsibleState.Expanded);project.impactNode=true;
-    return [...(data.monitor_error?[new vscode.TreeItem('Monitoring error: '+data.monitor_error)]:[]),mode,scope,...(this.projectView?[project]:[]),source,feed];
+    const news=new vscode.TreeItem(`Security Intelligence / News: ${data.security_news?.length||0} cached${this.intelligence?.enabled()?'':' (collection OFF)'}`,vscode.TreeItemCollapsibleState.Collapsed);news.group='securityNews';
+    return [...(data.monitor_error?[new vscode.TreeItem('Monitoring error: '+data.monitor_error)]:[]),mode,scope,...(this.projectView?[project]:[]),source,feed,news];
   }
   dispose(){this.change.dispose();}
 }
@@ -37,12 +43,13 @@ async function activateThreats(context) {
   // All intelligence data is extension-owned and must remain outside analyzed projects.
   const storage=path.join(context.globalStorageUri.fsPath,'threat-intelligence.sqlite');
   for(const folder of vscode.workspace.workspaceFolders || [])if(folder.uri.scheme==='file')await outsideProject(await fs.realpath(folder.uri.fsPath),storage);
-  const monitor=new ThreatMonitor({file:storage,ecosystems:userSetting('ecosystems',['npm','PyPI']),retentionDays:userSetting('retentionDays',90)});
+  const monitor=new ThreatMonitor({file:storage,ecosystems:userSetting('ecosystems',['npm','PyPI']),retentionDays:userSetting('retentionDays',90),newsEnabled:require('../intelligence/view').enabled()});
   await monitor.initialize();
   const feed=new ThreatFeed(monitor,()=>userSetting('enabled',true));
   monitor.onUpdate=()=>feed.refresh();
   const impact=await require('../impact/view').createProjectView(context,monitor,()=>feed.refresh());
   feed.projectView=impact;
+  const intelligence=require('../intelligence/view').createIntelligenceView(context,monitor,impact,()=>feed.refresh());feed.intelligence=intelligence;
   const tree=vscode.window.createTreeView('sentinel6ThreatFeed',{treeDataProvider:feed,showCollapseAll:true});
   const reg=(name,fn)=>context.subscriptions.push(vscode.commands.registerCommand('sentinel6.'+name,fn));
   const show=async(data)=>{const doc=await vscode.workspace.openTextDocument({content:JSON.stringify(data,null,2),language:'json'});return vscode.window.showTextDocument(doc,{preview:true});};
@@ -76,6 +83,6 @@ async function activateThreats(context) {
     if(e.affectsConfiguration('sentinel6.threatMonitoring.ecosystems')||e.affectsConfiguration('sentinel6.threatMonitoring.retentionDays'))vscode.window.showInformationMessage('Reload the VS Code window to apply threat source/retention settings.');
   }));
   schedule();
-  return {snapshot:()=>monitor.snapshot(),refresh:options=>monitor.refresh(options),advisory:id=>monitor.advisory(id),storage,treeId:tree.id,impact};
+  return {snapshot:()=>monitor.snapshot(),refresh:options=>monitor.refresh(options),advisory:id=>monitor.advisory(id),storage,treeId:tree.id,impact,intelligence};
 }
 module.exports={activateThreats,ThreatFeed};

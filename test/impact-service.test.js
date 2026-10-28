@@ -11,7 +11,7 @@ async function fixture(fn,{version='1.0.0',advisory=true}={}){
 test('SQLite version 1 migrates without losing prior advisory payloads',async()=>{
  const d=await fs.mkdtemp(path.join(os.tmpdir(),'s6-migrate-')),file=path.join(d,'old.sqlite');
  try{const SQL=await require('sql.js')({locateFile:f=>require.resolve('sql.js/dist/'+f)}),db=new SQL.Database();db.run('CREATE TABLE threat_advisories(canonical_id TEXT PRIMARY KEY,data TEXT NOT NULL,last_seen TEXT NOT NULL); PRAGMA user_version=1;');const data=JSON.stringify(m.combine(m.github([f.gh()]),null,f.now));db.run('INSERT INTO threat_advisories VALUES (?,?,?)',[f.cve,data,f.now]);await fs.writeFile(file,db.export());db.close();
- await withStore(file,async s=>{assert.equal(s.get('PRAGMA user_version').user_version,2);assert.equal(s.get('SELECT data FROM threat_advisories').data,data);assert.ok(s.get("SELECT name FROM sqlite_master WHERE name='project_inventory'"));});
+ await withStore(file,async s=>{assert.equal(s.get('PRAGMA user_version').user_version,3);assert.equal(s.get('SELECT data FROM threat_advisories').data,data);assert.ok(s.get("SELECT name FROM sqlite_master WHERE name='project_inventory'"));});
  await withReadStore(file,s=>assert.equal(s.advisory(f.cve).canonical_id,f.cve));}finally{await fs.rm(d,{recursive:true,force:true});}
 });
 test('project analysis persists evidence and relative files without modifying or transmitting source',()=>fixture(async({service,root,file})=>{

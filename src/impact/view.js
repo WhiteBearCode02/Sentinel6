@@ -26,7 +26,7 @@ async function createProjectView(context,monitor,refresh){
       const ids=folders.map((_f,i)=>'project-'+i),securityService=await createSecurityService({workspaces:folders.map((f,i)=>({id:ids[i],root:f.uri.fsPath}))});
       const s=new ProjectImpactService({securityService,file:monitor.file,workspaceIds:ids,onUpdate:async result=>{refresh();if(result.status==='completed'&&valid())await notify(s,result.workspaceId);}});
       await s.initialize();if(!valid()||current!==generation){s.dispose();return null;}service=s;binding=s.bindMonitor(monitor);
-      watcher=vscode.workspace.createFileSystemWatcher('**/{package.json,package-lock.json,*.txt,*.in,pnpm-lock.yaml,yarn.lock,poetry.lock,uv.lock}');
+      watcher=vscode.workspace.createFileSystemWatcher('**/{package.json,package-lock.json,.npmrc,*.txt,*.in,pnpm-lock.yaml,yarn.lock,poetry.lock,uv.lock}');
       const changed=uri=>{
         if(!valid())return;
         folders.forEach((folder,i)=>{const relative=path.relative(folder.uri.fsPath,uri.fsPath);if(relative&&!path.isAbsolute(relative)&&relative!=='..'&&!relative.startsWith('..'+path.sep)){
@@ -82,7 +82,7 @@ async function createProjectView(context,monitor,refresh){
       if(node.category)return (state.latest?.matches||[]).filter(m=>node.category.includes(m.impact_status)).slice(0,200).map(m=>{
         const row=new vscode.TreeItem(`${m.canonical_id}: ${m.package.name} ${m.package.detected_version||'version unknown'}`,vscode.TreeItemCollapsibleState.Collapsed);row.description=m.impact_status;row.tooltip=`${m.version_result}; ${m.priority.level}. Runtime and attack path unverified.`;row.command={command:'sentinel6.projectEvidence',title:'View Evidence',arguments:[state.workspaceId,m.id]};row.impactNode=true;row.workspaceId=state.workspaceId;row.matchId=m.id;return row;
       });
-      if(node.matchId){const row=new vscode.TreeItem('Open Dependency File');row.command={command:'sentinel6.projectOpenDependency',title:'Open Dependency File',arguments:[state.workspaceId,node.matchId]};return [row];}
+      if(node.matchId){const row=new vscode.TreeItem('Open Dependency File');row.command={command:'sentinel6.projectOpenDependency',title:'Open Dependency File',arguments:[state.workspaceId,node.matchId]};const match=state.latest.matches.find(m=>m.id===node.matchId),intel=new vscode.TreeItem('Analyze Threat Details / Attack Conditions');intel.command={command:'sentinel6.intelligenceAnalyze',title:'Analyze Threat Details',arguments:[match.canonical_id]};return [row,intel];}
       const rows=[];if(state.error)rows.push(new vscode.TreeItem('Analysis error: '+state.error+'; last valid result retained'));
       const analyzeRow=new vscode.TreeItem('Analyze / Reassess Project');analyzeRow.command={command:'sentinel6.projectReassess',title:'Reassess Project',arguments:[state.workspaceId]};rows.push(analyzeRow);
       if(!state.latest)return [...rows,new vscode.TreeItem('NOT_ANALYZED: no saved assessment')];
@@ -96,7 +96,7 @@ async function createProjectView(context,monitor,refresh){
       rows.push(new vscode.TreeItem(`Local SQLite: ${Math.round(state.storage.bytes/1024)} KiB / 65536 KiB${state.storage.warning?' — STORAGE WARNING':''}`));
       const history=new vscode.TreeItem('View Impact History');history.command={command:'sentinel6.projectHistory',title:'View Impact History',arguments:[state.workspaceId]};rows.push(history);return rows;
     },
-    async assessments(advisoryId){return (await snapshots()).flatMap(s=>(s.latest?.matches||[]).filter(m=>m.canonical_id===advisoryId).map(m=>({workspaceId:s.workspaceId,...m})));},
+    async assessments(advisoryId){return (await snapshots()).flatMap(s=>(s.latest?.matches||[]).filter(m=>m.canonical_id===advisoryId).map(m=>({workspaceId:s.workspaceId,...m,security_intelligence:s.latest.security_intelligence?.items.find(i=>i.match_id===m.id)||null})));},
     async recordScannerReport(root,report){const s=await ensure();if(s){const index=folders.findIndex(f=>path.resolve(f.uri.fsPath)===path.resolve(root));if(index>=0){s.recordScannerReport('project-'+index,report);await s.analyze({workspaceId:'project-'+index,force:true});}}},
     reset:stop,
     dispose(){disposed=true;stop();}

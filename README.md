@@ -1,14 +1,16 @@
-# Sentinel6 — Local Scanners + Project Impact TI-2
+# Sentinel6 — Local Scanners + Security Intelligence TI-3
 
 공유 보안 서비스와 호환 모델 1.1을 점진적으로 추가했습니다. [공통 코어/API](docs/shared-security-core.md), [MCP 도입 설계](docs/mcp-server-design.md), [배포 준비 상태](docs/distribution-readiness.md), [다음 개발 계획](docs/next-development-plan.md)을 참고하세요. MCP 서버와 Marketplace 게시 기능은 아직 제공하지 않습니다.
 
 기존 Threat Feed·공식 수집·SQLite·일일 갱신을 유지하며, **사용자가 활성화한 프로젝트의 npm/PyPI 의존성 버전 영향 분석(TI-2)**을 추가했습니다. [TI-2 사용법·판정·제한](docs/threat-intelligence-ti2-design.md), [실제 검증 결과](docs/threat-intelligence-ti2-validation.md), [TI-1 수집 범위](docs/threat-intelligence-ti1.md)를 참고하세요. 전체 공개 Feed의 NOT_ANALYZED와 프로젝트별 영향 판정은 별개입니다.
 
+TI-3는 **공식 공급업체 권고와 연구 RSS의 출처별 주장·공격 조건·프로젝트 미확인 사항**을 연결합니다. [TI-3 설계/지원 범위](docs/threat-intelligence-ti3-design.md), [검증 결과](docs/threat-intelligence-ti3-validation.md)를 참고하세요. 외부 AI 없이 제한된 규칙과 구조화 메타데이터로 동작합니다.
+
 무료 로컬 스캐너를 실행하는 VS Code 확장입니다. 이 저장소는 구현 시작 시 `.git`만 존재했으므로 Phase 1 검토 대상 코드가 없었으며, 확장 기본 구조도 함께 작성했습니다.
 
 ## 실행
 
-Node.js **20.9.x 이상 20.x / 22.11.x 이상 22.x / 24.x**, VS Code 1.90 이상을 선언합니다. 실제 검증 환경은 Node 24.14.0 / VS Code 1.143.1 / Windows x64이며 최소 환경 검증은 배포 전 과제입니다. 먼저 `npm.cmd ci --ignore-scripts`로 고정된 무료 SQLite WASM·SemVer·PEP 440 의존성을 설치합니다. 이는 Sentinel6 개발 의존성 설치이며, 분석 대상 프로젝트에는 설치 명령을 실행하지 않습니다. 기존 보안 스캐너는 계속 오프라인으로 실행하며, Threat Intelligence는 별도로 공식 공개 메타데이터를 요청합니다.
+Node.js **20.9.x 이상 20.x / 22.11.x 이상 22.x / 24.x**, VS Code 1.90 이상을 선언합니다. 실제 검증 환경은 Node 24.14.0 / VS Code 1.143.1 / Windows x64이며 최소 환경 검증은 배포 전 과제입니다. 먼저 `npm.cmd ci --ignore-scripts`로 고정된 무료 SQLite WASM·SemVer·PEP 440·XML 파서 의존성을 설치합니다. 이는 Sentinel6 개발 의존성 설치이며, 분석 대상 프로젝트에는 설치 명령을 실행하지 않습니다. 기존 보안 스캐너는 계속 오프라인으로 실행하며, Threat Intelligence는 별도로 공식 공개 메타데이터를 요청합니다.
 
 1. VS Code에서 이 저장소를 열고 F5 (`Run Sentinel6`)를 실행합니다.
 2. Extension Development Host에서 검사할 프로젝트를 엽니다.
@@ -39,6 +41,18 @@ CLI 종료 코드: 0=모든 도구 완료, 2=미설치/실패/부분 완료/취�
 지원: package.json, package-lock v2/v3, requirements.txt 및 안전한 `-r` 포함. 범위만 있거나 환경 마커·제약·VCS·별칭을 해결할 수 없으면 버전을 추측하지 않습니다. Yarn/pnpm/Poetry/uv/Maven/Gradle은 미지원으로 표시합니다. 수집 캐시에 없는 과거 취약점도 있으므로 **전체 검사는 기존 Scan Project와 함께 사용**하세요.
 
 CONFIRMED_AFFECTED는 선언/잠금 버전이 공식 영향 범위에 해당한다는 뜻입니다. 실제 설치·실행 조건·공격 경로·침해를 확인한 결과가 아닙니다. 스캐너는 영향 분석만으로 자동 실행되지 않습니다. 원본 수정·자동 패치·분석 대상의 패키지 설치·프로젝트 업로드·유료 AI 호출은 없습니다. 로컬 inventory·근거·알림 이력도 `Delete Local Threat Data`의 명시적 삭제에 포함됩니다.
+
+## 보안 정보·공격 조건 분석 (TI-3)
+
+1. `Sentinel6: Refresh Security News` 실행 → 최초 안내에서 **Enable Security News**를 선택합니다. 기본 OFF인 사용자 전역 설정 `sentinel6.securityNews.enabled`를 활성화하며, 검토된 Red Hat 공개 API와 Cisco Talos RSS만 요청합니다.
+2. Sentinel6 → **Security Intelligence / News**의 항목을 선택하거나 기존 Threat Feed 항목을 펼쳐 `Analyze Threat Details`를 실행합니다. 수집하지 않고 기존 캐시만 로컬 분석할 수도 있습니다.
+3. `View Attack Conditions`는 조건 JSON, `Verify Threat Sources`는 주장별 출처/충돌, `Open Intelligence Report`는 개요→공격 조건→프로젝트→대응→근거 순서의 Markdown을 엽니다. `Analyze Threat Details`는 전체 JSON을 엽니다. 파일 내보내기는 사용자가 Save As로 수행합니다.
+4. 프로젝트 분석도 활성화했다면 기존 TI-2 패키지/버전 결과와 별도의 TI-3 조건 정보를 함께 봅니다. `.npmrc`의 명시적 `ignore-scripts` 값만 제한적으로 확인하며 사용자/전역 설정·환경 변수·실제 설치·배포는 확인하지 않습니다. 다른 설정이나 정확한 코드 경로는 UNKNOWN입니다.
+5. 기존 Threat Monitoring이 ON이면 VS Code 실행 중 매일 수집하고, 의미 있는 새 근거가 관련 프로젝트의 캐시 재평가를 유발합니다. 반복 수집은 새 이력/위험 알림을 만들지 않습니다. 수집은 `Cancel Threat Collection` 또는 진행 알림 Cancel로 취소합니다. VS Code 종료 시 중단됩니다.
+
+Red Hat은 공개일 기준 제한된 목록과 관찰한 CVE 일부를 재확인하므로 모든 기존 CVE의 수정 feed가 아닙니다. RSS도 현재 제공된 항목만 수집합니다. 대기 목록·실패·오래된 캐시는 표시하며, NVD/KISA와 임의 사이트 크롤링은 미지원입니다. Red Hat 메타데이터는 원문 링크·CC BY 4.0 출처 표시를 유지하고 Talos 기사의 본문은 저장하지 않습니다.
+
+CWE는 분류 근거이며 인증·공격 성공을 증명하지 않습니다. 확인된 CVSS 지표와 제한된 명시적 영어 문장만 조건으로 구조화하고, PoC·보도된 악용·공식 악용 확인을 구분합니다. 공급업체 제품 범위와 프로젝트 적용성이 같다고 추측하지 않으며 TI-2의 구성요소 버전 판정도 바꾸지 않습니다. 원본 수정·명령 실행·유료 AI·프로젝트 업로드는 없습니다. SQLite는 v3로 무손실 업그레이드되며 구버전 프로그램으로 되돌리기 전 별도 백업이 필요합니다.
 
 ## 설치 및 오프라인 DB
 

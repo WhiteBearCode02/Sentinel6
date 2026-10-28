@@ -14,6 +14,7 @@ function validateUrl(value) {
   if (typeof value !== 'string' || value.length>2048 || /[\s\0-\x1f\\]/.test(value)) throw new CollectionError('blocked_url');
   let u; try {u=new URL(value);} catch {throw new CollectionError('blocked_url');}
   if (u.protocol!=='https:' || u.username || u.password || u.port || u.hash) throw new CollectionError('blocked_url');
+  if(require('../intelligence/registry').allowed(u))return u;
   if (value===CISA || value===CISA_MIRROR) return u;
   if (u.hostname==='api.github.com' && u.pathname==='/advisories') {
     const keys=['type','modified','sort','direction','per_page','after','before'];
@@ -75,20 +76,21 @@ function transport(value,{headers={},signal,timeout=15000,maxBytes=16*1024*1024,
 function cleanHeader(value) {return typeof value==='string' && value.length<=512 && !/[\r\n\0]/.test(value) ? value : undefined;}
 class HttpClient {
   constructor({send=transport,wait=sleep,now=Date.now,minInterval=1000}={}) {this.send=send;this.wait=wait;this.now=now;this.minInterval=minInterval;this.lastRequest=0;}
-  async get(url,{cache,signal,indexSince}={}) {
+  async get(url,{cache,signal,indexSince,maxBytes}={}) {
     validateUrl(url);
+    if(maxBytes!==undefined&&(!Number.isSafeInteger(maxBytes)||maxBytes<1024||maxBytes>16*1024*1024))throw new CollectionError('response_limit');
     const headers={'User-Agent':'Sentinel6/0.3 (public threat metadata only)','Accept':'application/json','Accept-Encoding':'identity'};
     if(new URL(url).hostname==='api.github.com') {headers.Accept='application/vnd.github+json';headers['X-GitHub-Api-Version']='2026-03-10';}
     if(cleanHeader(cache?.etag)) headers['If-None-Match']=cache.etag;
     if(cleanHeader(cache?.last_modified)) headers['If-Modified-Since']=cache.last_modified;
     for(let attempt=0;attempt<3;attempt++) {
       if(signal?.aborted) throw new CollectionError('cancelled');
-      const interval=new URL(url).hostname==='api.github.com'?Math.max(1000,this.minInterval):this.minInterval;
+      const interval=new URL(url).hostname==='access.redhat.com'?Math.max(2000,this.minInterval):new URL(url).hostname==='api.github.com'?Math.max(1000,this.minInterval):this.minInterval;
       const pause=Math.max(0,interval-(this.now()-this.lastRequest));
       if(pause) await this.wait(pause,undefined,{signal}).catch(()=>{throw new CollectionError('cancelled');});
       this.lastRequest=this.now();
       let response;
-      try {response=await this.send(url,{headers,signal,indexSince});}
+      try {response=await this.send(url,{headers,signal,indexSince,...(maxBytes===undefined?{}:{maxBytes})});}
       catch(e) {
         if(e.code==='cancelled' || e.code==='blocked_address' || e.code==='response_limit' || attempt===2) throw e instanceof CollectionError ? e : new CollectionError('network_failed');
         await this.wait(500*2**attempt,undefined,{signal}).catch(()=>{throw new CollectionError('cancelled');});continue;
