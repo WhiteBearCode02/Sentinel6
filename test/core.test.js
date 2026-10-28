@@ -45,7 +45,7 @@ test('timeouts and scanner args cannot introduce shell commands',()=>temp(async 
  for(const id of ['semgrep','osv','gitleaks','trivy']) {
  const args=argsFor(id,path.join(d,'project'),d,path.join(d,'cache'));assert.ok(args.every(x=>typeof x==='string'));assert.ok(!args.includes('--autofix'));assert.equal(args.at(-1),id==='semgrep' ? '.' : path.join(d,'project'));
  }
- assert.ok(argsFor('semgrep',d,d,d).includes('--metrics=off'));assert.ok(argsFor('osv',d,d,d).includes('--offline'));assert.ok(argsFor('gitleaks',d,d,d).includes('--redact=100'));assert.ok(argsFor('trivy',d,d,d).includes('--skip-db-update'));
+ assert.ok(argsFor('semgrep',d,d,d).includes('--metrics=off'));assert.ok(argsFor('semgrep',d,d,d).includes('--no-rewrite-rule-ids'));assert.ok(argsFor('osv',d,d,d).includes('--offline'));assert.ok(argsFor('gitleaks',d,d,d).includes('--redact=100'));assert.ok(argsFor('trivy',d,d,d).includes('--skip-db-update'));
 }));
 test('cancelled scan still saves coverage report',()=>temp(async d=>{
  const root=path.join(d,'src');await fs.mkdir(root);const c=new AbortController();c.abort();

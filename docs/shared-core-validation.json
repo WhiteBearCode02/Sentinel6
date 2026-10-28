@@ -1,0 +1,94 @@
+{
+  "verifiedOn": "2026-10-28",
+  "baseline": {
+    "branch": "main",
+    "localAndRemoteHead": "144827579c35d4656ef91a47d438fc411df053f4",
+    "version": "0.3.0",
+    "testsPassed": 67
+  },
+  "final": {
+    "testsPassed": 91,
+    "failed": 0,
+    "skipped": 0,
+    "syntaxCheck": "passed",
+    "dependencyAuditVulnerabilities": 0
+  },
+  "liveScanners": [
+    {
+      "scanner": "semgrep",
+      "status": "completed",
+      "version": "1.182.1",
+      "areas": [
+        "sast"
+      ],
+      "install": "https://semgrep.dev/docs/getting-started/",
+      "durationMs": 5649,
+      "findings": 2
+    },
+    {
+      "scanner": "osv",
+      "status": "completed",
+      "version": "2.7.0",
+      "areas": [
+        "dependencies"
+      ],
+      "install": "https://google.github.io/osv-scanner/installation/",
+      "durationMs": 2423,
+      "findings": 45
+    },
+    {
+      "scanner": "gitleaks",
+      "status": "completed",
+      "version": "8.30.1",
+      "areas": [
+        "secrets"
+      ],
+      "install": "https://github.com/gitleaks/gitleaks#installing",
+      "durationMs": 510,
+      "findings": 1
+    },
+    {
+      "scanner": "trivy",
+      "status": "completed",
+      "version": "0.76.1",
+      "areas": [
+        "dependencies",
+        "secrets",
+        "misconfiguration"
+      ],
+      "install": "https://trivy.dev/docs/latest/getting-started/installation/",
+      "durationMs": 964,
+      "findings": 32
+    }
+  ],
+  "findings": 34,
+  "byKind": {
+    "sast": 2,
+    "dependency": 29,
+    "secret": 1,
+    "misconfiguration": 2
+  },
+  "sourceUnchanged": true,
+  "secretOmitted": true,
+  "modelVersion": "1.1",
+  "directEngineCliConsistent": true,
+  "vscode": {
+    "commandsRegistered": 10,
+    "diagnostics": 34,
+    "sourceLine": 4,
+    "problemNavigation": true,
+    "localReportOpened": true,
+    "threatInitialized": true,
+    "modelVersion": "1.1",
+    "sharedCore": true,
+    "cliConsistent": true
+  },
+  "notExecuted": [
+    "MCP SDK server/handshake/Codex connection",
+    "VSIX packaging/installation",
+    "GitHub Actions CI",
+    "Marketplace publishing",
+    "OS scheduled task registration",
+    "git push/release"
+  ]
+}

@@ -4,6 +4,7 @@ const path = require('node:path');
 const os = require('node:os');
 const {run, executable} = require('./process');
 const {parse, merge, safePath} = require('./parsers');
+const {withReportMetadata}=require('./report-model');
 const definitions = {
   semgrep: {command:'semgrep', areas:['sast'], install:'https://semgrep.dev/docs/getting-started/'},
   osv: {command:'osv-scanner', areas:['dependencies'], install:'https://google.github.io/osv-scanner/installation/'},
@@ -17,7 +18,7 @@ async function status(executables = {}, signal) {
     let file;
     try {file = await executable(d.command, executables[id]);} catch {results.push({scanner:id,status:'failed',reason:'invalid_executable',areas:d.areas}); continue;}
     if (!file) {results.push({scanner:id,status:'not_installed',areas:d.areas,install:d.install}); continue;}
-    const probe = await run(file, ['--version'], {timeout:10000, signal, limit:1024*1024});
+    const probe = await run(file, ['--version'], {cwd:path.dirname(file),timeout:30000, signal, limit:1024*1024});
     // Do not propagate arbitrary version stdout to reports or UI.
     const version = probe.stdout?.match(/\b\d+\.\d+\.\d+\b/)?.[0];
     results.push({scanner:id, status:probe.status === 'cancelled' ? 'cancelled' : probe.status === 'completed' && probe.code === 0 && version ? 'available' : 'failed',
@@ -27,6 +28,12 @@ async function status(executables = {}, signal) {
 }
 const excluded = new Set(['.git','.tools','.cache','node_modules','.venv','venv','reports','.sentinel6','dist','build']);
 const configs = new Set(['trivy.yaml','trivy.yml','trivy-secret.yaml','.gitleaks.toml','.gitleaksignore','osv-scanner.toml']);
+async function readBounded(handle,maxBytes) {
+  const chunks=[];let bytes=0;
+  while(bytes<=maxBytes) {const buffer=Buffer.alloc(Math.min(65536,maxBytes+1-bytes));const r=await handle.read(buffer,0,buffer.length,null);if(!r.bytesRead)break;bytes+=r.bytesRead;chunks.push(buffer.subarray(0,r.bytesRead));}
+  if(bytes>maxBytes)throw new Error('file_size_limit');
+  return Buffer.concat(chunks,bytes);
+}
 async function snapshot(root, destination, signal) {
   let bytes = 0, files = 0; const skipped = {symlinks:0,largeFiles:0,excludedDirectories:0,scannerConfigs:0};
   async function copy(dir, target) {
@@ -44,9 +51,11 @@ async function snapshot(root, destination, signal) {
           safePath(root, await fs.realpath(src));
           const s = await h.stat();
           if (s.size > 5*1024*1024) {skipped.largeFiles++; continue;}
-          bytes += s.size; files++;
+          let contents;
+          try{contents=await readBounded(h,5*1024*1024);}catch(e){if(e.message!=='file_size_limit')throw e;skipped.largeFiles++;continue;}
+          bytes += contents.length; files++;
           if (bytes > 100*1024*1024 || files > 20000) throw new Error('snapshot_limit');
-          await fs.writeFile(dest, await h.readFile(), {mode:0o600});
+          await fs.writeFile(dest, contents, {mode:0o600});
         } finally {await h.close();}
       }
     }
@@ -57,7 +66,7 @@ async function snapshot(root, destination, signal) {
 function argsFor(id, target, work, cache) {
   const output = path.join(work, id + '.json');
   switch (id) {
-    case 'semgrep': return ['scan','--oss-only','--jobs=1','--timeout=10','--max-memory=512','--config',path.join(work,'rules.yml'),'--json','--metrics=off','--disable-version-check','--no-git-ignore','--output',output,'.'];
+    case 'semgrep': return ['scan','--oss-only','--jobs=1','--timeout=10','--max-memory=512','--no-rewrite-rule-ids','--config',path.join(work,'rules.yml'),'--json','--metrics=off','--disable-version-check','--no-git-ignore','--output',output,'.'];
     case 'osv': return ['scan','source','--recursive','--no-ignore','--format=json','--offline','--no-call-analysis=all','--no-resolve','--output-file',output,target];
     case 'gitleaks': return ['dir','--redact=100','--no-banner','--no-color','--report-format=json','--report-path',output,target];
     case 'trivy': return ['fs','--scanners','vuln,secret,misconfig','--format=json','--quiet','--offline-scan','--skip-db-update','--skip-java-db-update','--skip-check-update','--cache-dir',cache,'--output',output,target];
@@ -127,8 +136,9 @@ async function scan(root, options = {}) {
       if (!accepted.includes(result.code)) {entry.status='failed';entry.reason='scanner_exit';entry.exitCode=result.code;continue;}
       try {
         const file = path.join(work,s.scanner+'.json');
-        if ((await fs.stat(file)).size > 32*1024*1024) throw new Error('oversize');
-        const data = JSON.parse(await fs.readFile(file,'utf8'));
+        const handle=await fs.open(file,'r');let raw;
+        try{if((await handle.stat()).size>32*1024*1024)throw new Error('oversize');raw=await readBounded(handle,32*1024*1024);}finally{await handle.close();}
+        const data = JSON.parse(raw.toString('utf8'));
         const findings = parse(s.scanner,data,target);
         if (result.code === 1 && !findings.length) throw new Error('inconsistent_exit');
         // Ensure every returned location refers to a copied file, not a fabricated path.
@@ -147,8 +157,9 @@ async function scan(root, options = {}) {
       const entries = report.scanners.filter(s=>s.areas.includes(area));
       return [area,{completed:entries.filter(s=>s.status === 'completed').map(s=>s.scanner), uncompleted:entries.filter(s=>s.status !== 'completed').map(s=>({scanner:s.scanner,status:s.status,reason:s.reason}))}];
     }));
+    Object.assign(report,withReportMetadata(report));
     const reportFile = await saveReport(report,realReportDir);
     return {report,reportFile};
   }
 }
-module.exports = {scan,status,snapshot,argsFor,definitions,saveReport,outsideProject};
+module.exports = {scan,status,snapshot,argsFor,definitions,saveReport,outsideProject,readBounded};

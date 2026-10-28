@@ -1,7 +1,7 @@
 'use strict';
 const vscode = require('vscode');
 const path = require('node:path');
-const {scan,status} = require('./core');
+const {createSecurityService} = require('./security-service');
 const {checkedFile} = require('./parsers');
 let active;
 async function activate(context) {
@@ -19,7 +19,10 @@ async function activate(context) {
   register('status',async()=>{
     if (!vscode.workspace.isTrusted) return;
     output.clear();
-    for (const s of await status(settings().executables)) output.appendLine(`${s.scanner}: ${s.status} ${s.version || ''}\nInstallation: ${s.install || ''}`);
+    const folders=(vscode.workspace.workspaceFolders || []).filter(f=>f.uri.scheme==='file');
+    if(!folders.length)return;
+    const service=await createSecurityService({workspaces:folders.map((f,i)=>({id:'workspace-'+i,root:f.uri.fsPath})),scannerOptions:settings()});
+    for (const s of await service.scannerStatus()) output.appendLine(`${s.scanner}: ${s.status} ${s.version || ''}\nInstallation: ${s.install || ''}`);
     output.show();
   });
   register('results',async()=>{if(latest) await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(latest));});
@@ -31,10 +34,12 @@ async function activate(context) {
     if (!folder) return;
     active=new AbortController(); diagnostics.clear();output.clear();
     try {
-      await vscode.window.withProgress({location:vscode.ProgressLocation.Notification,title:'Sentinel6: scanning saved files',cancellable:true},async(progress,token)=>{
+      return await vscode.window.withProgress({location:vscode.ProgressLocation.Notification,title:'Sentinel6: scanning saved files',cancellable:true},async(progress,token)=>{
         const sub=token.onCancellationRequested(()=>active?.abort());
         try {
-          const {report,reportFile}=await scan(folder.uri.fsPath,{...settings(),signal:active.signal,reportDir:path.join(context.globalStorageUri.fsPath,'reports'),onProgress:s=>progress.report({message:s})});
+          const service=await createSecurityService({workspaces:[{id:'workspace',root:folder.uri.fsPath}],scannerOptions:{...settings(),reportDir:path.join(context.globalStorageUri.fsPath,'reports')}});
+          const result=await service.scanWorkspace({workspaceId:'workspace'},{signal:active.signal,onProgress:s=>progress.report({message:s})});
+          const {report,reportFile}=result;
           latest=vscode.Uri.file(reportFile);
           const byFile=new Map();
           for(const f of report.findings) {
@@ -54,6 +59,7 @@ async function activate(context) {
           output.appendLine(`Findings: ${report.findings.length}\nReport: ${reportFile}`);output.show(true);
           const incomplete=report.scanners.some(s=>s.status !== 'completed');
           vscode.window.showInformationMessage(`Sentinel6: ${report.findings.length} findings. ${incomplete ? 'Some checks were not completed; see Sentinel6 output.' : 'Checks completed within documented coverage.'}`);
+          return result;
         } finally {sub.dispose();}
       });
     } catch {vscode.window.showErrorMessage('Sentinel6 scan could not complete. Check project access and settings.');}

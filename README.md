@@ -1,5 +1,7 @@
 # Sentinel6 — Local Scanners + Threat Intelligence TI-1
 
+공유 보안 서비스와 호환 모델 1.1을 점진적으로 추가했습니다. [공통 코어/API](docs/shared-security-core.md), [MCP 도입 설계](docs/mcp-server-design.md), [배포 준비 상태](docs/distribution-readiness.md), [다음 개발 계획](docs/next-development-plan.md)을 참고하세요. MCP 서버와 Marketplace 게시 기능은 아직 제공하지 않습니다.
+
 Threat Feed, 공식 데이터 수집, SQLite 캐시와 VS Code 실행 중 매일 갱신이 추가되었습니다. [TI-1 실행·구조·지원 범위](docs/threat-intelligence-ti1.md)를 참고하세요. 현재 프로젝트 영향 분석은 NOT_ANALYZED이며 TI-2 이후 범위입니다.
 
 무료 로컬 스캐너를 실행하는 VS Code 확장입니다. 이 저장소는 구현 시작 시 `.git`만 존재했으므로 Phase 1 검토 대상 코드가 없었으며, 확장 기본 구조도 함께 작성했습니다.
